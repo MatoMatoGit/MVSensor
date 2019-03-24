@@ -1,0 +1,21 @@
+/*
+ * sensor.h
+ *
+ * Created: 16-03-2019 22:38:51
+ *  Author: dorspi
+ */ 
+
+
+#ifndef SENSOR_H_
+#define SENSOR_H_
+
+#include <stdint.h>
+
+#define SENSOR_FILTER_DEPTH		10
+#define SENSOR_READ_INTERVAL_MS 1000
+
+void SensorInit(void);
+
+uint32_t SensorValueGet(void);
+
+#endif /* SENSOR_H_ */
