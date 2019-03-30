@@ -9,6 +9,8 @@
 #ifndef SLEEP_H_
 #define SLEEP_H_
 
-void EnterSleep(void);
+#include <stdint.h>
+
+void SleepForDuration(uint32_t duration_s);
 
 #endif /* SLEEP_H_ */
