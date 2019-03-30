@@ -7,8 +7,6 @@
 
 #include "oc_timer.h"
 
-#include "../SoftwareSerial.h"
-
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
