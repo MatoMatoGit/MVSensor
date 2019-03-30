@@ -28,7 +28,7 @@ static uint8_t WdtPrescalers[WDT_CYCLES_NUM] = {
 	(1<<WDP3) | (1<<WDP0),				/* 1024K cycles. */
 };
 
-void WdtInit(WdtCycles_t cycles, WdtCallback_t cb)
+void WdtEnable(WdtCycles_t cycles, WdtCallback_t cb)
 {
 	Callback = cb;
 	
@@ -72,6 +72,17 @@ void WdtInit(WdtCycles_t cycles, WdtCallback_t cb)
 	WDTCR = WdtPrescalers[cycles];
 	// Enable the WD interrupt (note: no reset).
 	WDTCR |= (1 << WDIE);
+	
+	sei();
+}
+
+void WdtDisable(void)
+{
+	cli();
+	
+	MCUSR &= ~(1<<WDRF);
+	WDTCR |= (1<<WDCE) | (1<<WDE);
+	WDTCR = 0;
 	
 	sei();
 }

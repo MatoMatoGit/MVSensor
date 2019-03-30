@@ -25,6 +25,8 @@ typedef enum {
 
 typedef void (*WdtCallback_t)(void);
 
-void WdtInit(WdtCycles_t cycles, WdtCallback_t cb);
+void WdtEnable(WdtCycles_t cycles, WdtCallback_t cb);
+
+void WdtDisable(void);
 
 #endif /* WDT_H_ */
