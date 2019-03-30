@@ -11,9 +11,13 @@
 #include "moisture.h"
 #include "filter.h"
 
-#include "../SoftwareSerial.h"
+#include "SoftwareSerial.h"
 
+#if SENSOR_ENABLE_PERIODIC_READ==1
 static void OcTimerCallback(void);
+#else
+static void SensorReadCallback(uint32_t value);
+#endif
 
 static FilterDataType_t moisture_filter_buf[SENSOR_FILTER_DEPTH];
 
@@ -25,20 +29,28 @@ static Filter_t moisture_filter = {
 void SensorInit(void)
 {
 	FilterInit(&moisture_filter);
+
+#if SENSOR_ENABLE_PERIODIC_READ==1
 	OcTimerInit(244);
 	OcTimerCallbackRegister(OcTimerCallback);
 	OcTimerStart();
+#endif
 }
 
 uint32_t SensorValueGet(void)
 {
 	uint32_t value = 0;
-	
+
+#if SENSOR_ENABLE_PERIODIC_READ==0
+	MoistureSensorReadBurst(SENSOR_FILTER_DEPTH / 2, SensorReadCallback);
+#endif
+
 	FilterOut(&moisture_filter, &value);
 	
 	return value;
 }
 
+#if SENSOR_ENABLE_PERIODIC_READ==1
 static void OcTimerCallback(void)
 {
 	uint32_t value = MoistureSensorReadSingle();
@@ -46,3 +58,9 @@ static void OcTimerCallback(void)
 	//softSerialPrintInt(value);
 	//softSerialPrintLn("");
 }
+#else
+static void SensorReadCallback(uint32_t value)
+{
+	FilterIn(&moisture_filter, value);
+}
+#endif

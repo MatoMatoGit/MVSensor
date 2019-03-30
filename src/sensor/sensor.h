@@ -13,6 +13,10 @@
 
 #define SENSOR_FILTER_DEPTH		10
 #define SENSOR_READ_INTERVAL_MS 1000
+#define SENSOR_ENABLE_PERIODIC_READ 0
+
+#define SENSOR_MIN_VALUE 10
+#define SENSOR_MAX_VALUE 900
 
 void SensorInit(void);
 
