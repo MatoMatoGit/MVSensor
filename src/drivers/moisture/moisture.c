@@ -41,14 +41,14 @@ uint32_t MoistureSensorReadSingle(void)
 	return value;
 }
 
-void MoistureSensorReadBurst(uint8_t n, uint32_t *values)
+void MoistureSensorReadBurst(uint8_t n, void (*read_cb)(uint32_t val))
 {
 	#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
 	GpioMoisturePowerStateSet(1);
 	_delay_ms(25);
 	#endif
 	for(uint8_t i = 0; i < n; i++) {
-		values[i] = (uint32_t)AdcChannelRead(ADC_CH_MOISTURE_SENSOR);
+		read_cb((uint32_t)AdcChannelRead(ADC_CH_MOISTURE_SENSOR));
 	}
 	#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
 	GpioMoisturePowerStateSet(0);
