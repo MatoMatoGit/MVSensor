@@ -10,6 +10,7 @@
 
 #include <avr/sleep.h>
 #include <avr/power.h>
+#include <stdlib.h>
 
 #define WDT_CYCLE_TO_SEC_MAP_SIZE 4
 
@@ -27,14 +28,21 @@ const WdtCycleToSec_t WdtCycleToSecMapping[WDT_CYCLE_TO_SEC_MAP_SIZE] = {
 
 static volatile uint8_t wdt_flag = 0;
 
+static SleepWakeupCallback_t WakeupCallback = NULL;
+
 static void WdtTimeoutCallback(void);
 static WdtCycles_t WdtCyclesFromSec(uint32_t sec_total, uint8_t *sec_wdt);
+
+void SleepWakeupCallbackSet(SleepWakeupCallback_t wakeup_cb)
+{
+	WakeupCallback = wakeup_cb;
+}
 
 void SleepForDuration(uint32_t duration_s)
 {
 	//static uint32_t wdt_cnt = 0;
 	uint8_t sleep_s = 0;
-	
+
 	do {
 		/* Get the sleep time and WDT cycles from the total sleep duration.
 		 * Enable the WDT to timeout after that many cycles.  */
@@ -50,6 +58,12 @@ void SleepForDuration(uint32_t duration_s)
 		
 		/* Resumed here when woken. */
 		
+		/* Disable sleep mode. */
+		sleep_disable();
+
+		/* Enable power to peripherals. */
+		power_all_enable();
+		
 		/* Check if the MCU was woken by the WDT. */
 		if(wdt_flag) {
 			/* Decrement the total sleep duration by the amount
@@ -57,21 +71,20 @@ void SleepForDuration(uint32_t duration_s)
 			duration_s = (duration_s >= sleep_s ? duration_s - sleep_s : 0);
 			wdt_flag = 0;
 		}
-
 	/* Loop while there is still time left to sleep. */
 	} while(duration_s > 0);
 	
-	/* Disable sleep mode. */
-	sleep_disable();
-
-	/* Enable power to peripherals. */
-	power_all_enable();
+	if(WakeupCallback != NULL) {
+		WakeupCallback();
+	}
 }
 
 static void WdtTimeoutCallback(void)
 {
-	wdt_flag = 1;
-	WdtDisable();
+	if(wdt_flag == 0) {
+		wdt_flag = 1;
+		WdtDisable();
+	}
 }
 
 static WdtCycles_t WdtCyclesFromSec(uint32_t sec_total, uint8_t *sec_wdt)

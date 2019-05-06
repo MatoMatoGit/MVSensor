@@ -42,7 +42,7 @@ uint32_t SensorValueGet(void)
 	uint32_t value = 0;
 
 #if SENSOR_ENABLE_PERIODIC_READ==0
-	MoistureSensorReadBurst(SENSOR_FILTER_DEPTH / 2, SensorReadCallback);
+	MoistureSensorReadBurst(SENSOR_FILTER_DEPTH * 2, SensorReadCallback);
 #endif
 
 	FilterOut(&moisture_filter, &value);

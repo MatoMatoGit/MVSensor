@@ -4,12 +4,13 @@
  * Created: 16-03-2019 22:33:12
  *  Author: dorspi
  */ 
-//#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
-#define F_CPU 1000000UL
-#include <util/delay.h>
-//#endif
 
 #include "moisture.h"
+
+#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
+#include <util/delay.h>
+#endif
+
 #include "adc.h"
 #include "gpio_adc.h"
 #include "gpio_moisture.h"
@@ -18,11 +19,16 @@
 
 void MoistureInit(void)
 {
-//#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
+#ifdef MOISTURE_CONFIG_ENABLE_LOW_POWER_MODE
 	GpioMoistureInit();
-//#endif
+#endif
 	GpioAdcInit();
 	AdcInit();
+}
+
+void MoistureDeinit(void)
+{
+	AdcDeinit();
 }
 
 uint32_t MoistureSensorReadSingle(void)

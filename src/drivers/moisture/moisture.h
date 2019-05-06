@@ -15,6 +15,8 @@
 
 void MoistureInit(void);
 
+void MoistureDeinit(void);
+
 uint32_t MoistureSensorReadSingle(void);
 
 void MoistureSensorReadBurst(uint8_t n, void (*read_cb)(uint32_t val));

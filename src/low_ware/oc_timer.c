@@ -22,7 +22,6 @@ void OcTimerInit(uint8_t oc)
 	
 	OCR0A  = oc;      // number to count up to (0x70 = 112)
 	TCCR0A = (1 << WGM01);      // Clear Timer on Compare Match (CTC) mode
-	TIMSK |= (1 << OCIE0A);       // TC0 compare match A interrupt enable
 	TCCR0B = 0;      // stop timer
 	TCNT0 = 0;
 		
@@ -31,12 +30,18 @@ void OcTimerInit(uint8_t oc)
 
 void OcTimerStart(void)
 {
+	cli();
+	TIMSK |= (1 << OCIE0A);
 	TCCR0B |= (1 << CS00) | (1 << CS02); // clock source CLK/1024, start timer
+	sei();
 }
 
 void OcTimerStop(void)
 {
+	cli();
 	TCCR0B = 0;      // stop timer
+	TIMSK &= ~(1 << OCIE0A);
+	sei();
 }
 
 uint8_t OcTimerGet(void)

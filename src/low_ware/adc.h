@@ -5,6 +5,8 @@
 
 void AdcInit(void);
 
+void AdcDeinit(void);
+
 /* Blocking read. */
 uint16_t AdcChannelRead(uint8_t ch);
 

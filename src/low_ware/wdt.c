@@ -41,6 +41,7 @@ void WdtEnable(WdtCycles_t cycles, WdtCallback_t cb)
 	// sequence properly, you'll get unexpected results.
 
 	// Clear the reset flag on the MCUSR, the WDRF bit (bit 3).
+	MCUSR = 0;
 	MCUSR &= ~(1<<WDRF);
 
 	// Configure the Watchdog timer Control Register (WDTCSR)

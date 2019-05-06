@@ -61,8 +61,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef SoftwareSerial_h
 #define SoftwareSerial_h
 
-#define F_CPU 1000000UL
-
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdbool.h>

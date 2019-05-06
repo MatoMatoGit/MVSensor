@@ -12,6 +12,11 @@ void AdcInit(void)
     ADCSRA = (1<<ADEN)|(1<<ADPS1)|(1<<ADPS0);	
 }
 
+void AdcDeinit(void)
+{
+	ADCSRA = 0;
+}
+
 uint16_t AdcChannelRead(uint8_t ch)
 {
   // select the corresponding channel 0~7
